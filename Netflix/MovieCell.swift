@@ -10,21 +10,18 @@ import UIKit
 class MovieCollectionCell: UICollectionViewCell{
     var movie: Movie? {
         didSet {
-            title.text = movie?.title
-            desc.text = movie?.description
+            img.image = UIImage(named: movie?.imgURL ?? "")
         }
     }
     
-    let title: UILabel = {
-        let title = UILabel()
+    var img: UIImageView = {
+        let image = UIImageView()
         
-        return title
-    }()
-    
-    let desc: UILabel = {
-        let title = UILabel()
+        image.contentMode = .scaleAspectFill
         
-        return title
+        image.clipsToBounds = true
+        
+        return image
     }()
     
     override init(frame: CGRect) {
@@ -37,28 +34,21 @@ class MovieCollectionCell: UICollectionViewCell{
     }
     
     private func setupViews() {
-        addSubview(title)
-        addSubview(desc)
+        addSubview(img)
         
-        title.translatesAutoresizingMaskIntoConstraints = false
-        desc.translatesAutoresizingMaskIntoConstraints = false
+        img.translatesAutoresizingMaskIntoConstraints = false
+        
         addConstraints(NSLayoutConstraint.constraints(
-                        withVisualFormat:"H:|[title]|",
+                        withVisualFormat:"H:|[img]|",
                         options: [],
                         metrics: nil,
-                        views: ["title": title])
+                        views: ["img": img])
         )
         addConstraints(NSLayoutConstraint.constraints(
-                        withVisualFormat:"H:|[desc]|",
+                        withVisualFormat:"V:|[img]|",
                         options: [],
                         metrics: nil,
-                        views: ["desc": desc])
-        )
-        addConstraints(NSLayoutConstraint.constraints(
-                        withVisualFormat:"V:[title(40)]-0-[desc(40)]|",
-                        options: [],
-                        metrics: nil,
-                        views: ["title": title, "desc": desc ])
+                        views: ["img": img])
         )
     }
 }

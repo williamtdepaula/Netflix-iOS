@@ -29,6 +29,10 @@ class MovieCollectionView: NSObject, UICollectionViewDelegate, UICollectionViewD
         
         let cl = UICollectionView(frame: CGRect.zero, collectionViewLayout: layout)
         
+        cl.showsHorizontalScrollIndicator = false
+        
+        cl.backgroundColor = UIColor(named: "background")
+        
         cl.delegate = self
         cl.dataSource = self
         
@@ -50,7 +54,7 @@ class MovieCollectionView: NSObject, UICollectionViewDelegate, UICollectionViewD
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionContinueMovieId, for: indexPath) as! ContinueMovieCollectionCell
             
             cell.movie = movies?[indexPath.row]
-            cell.backgroundColor = .green
+            cell.backgroundColor = UIColor(named: "card")
             
             return cell
         }
@@ -58,7 +62,7 @@ class MovieCollectionView: NSObject, UICollectionViewDelegate, UICollectionViewD
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: collectionMovieId, for: indexPath) as! MovieCollectionCell
         
         cell.movie = movies?[indexPath.row]
-        cell.backgroundColor = .blue
+        cell.backgroundColor = UIColor(named: "card")
         
         return cell
     }

@@ -39,10 +39,7 @@ class FeedViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        navigationController?.navigationBar.barTintColor = .red
-        
-        setupLoadingIndicator()
-        setupConfigTableview()
+        setupViews()
         
         let api = NetflixAPI.shared
         
@@ -51,12 +48,36 @@ class FeedViewController: UITableViewController {
         api.request()
     }
     
-    private func setupConfigTableview() -> Void {
+    private func setupViews() -> Void {
+        //navigation
+        setupNavigationBar()
+        
+        //loading
+        setupLoadingIndicator()
+        
+        //tableview
+        setupConfigTableView()
+    }
+    
+    private func setupNavigationBar() -> Void {
+        navigationController?.navigationBar.barTintColor = UIColor(named: "background")
+        navigationController?.navigationBar.isTranslucent = true
+        
+        let logo = UIImageView(frame: CGRect(x: 0, y: 0, width: (navigationController?.navigationBar.frame.width)!, height: (navigationController?.navigationBar.frame.height)! * 0.65))
+        
+        logo.image = UIImage(named: "logo-splash")
+        logo.contentMode = .scaleAspectFit
+        
+        navigationItem.titleView = logo
+    }
+    
+    private func setupConfigTableView() -> Void {
         tableView.register(FeedMovieTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 200
         tableView.backgroundColor = UIColor(named: "background")
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
     }
     
     func setupLoadingIndicator() -> Void{
@@ -69,6 +90,46 @@ class FeedViewController: UITableViewController {
         window.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[progress0]|", options: [], metrics: nil, views: ["progress0": progressView]))
         
     }
+    
+    func setupHeaderTableView() -> Void {
+        let width = tableView.frame.width
+        
+        let containerHeader = UIView(frame: CGRect(x: 0, y: 0, width: width, height: width * (9 / 16) + 35))
+        
+        tableView.tableHeaderView = containerHeader
+        
+        let banner = UIImageView()
+        
+        banner.image = UIImage(named: feedMovie?.hightLight.imgURL ?? "")
+        
+        banner.contentMode = .scaleAspectFill
+        
+        banner.clipsToBounds = true
+        
+        banner.backgroundColor = UIColor(named: "card")
+        
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        
+        containerHeader.addSubview(banner)
+        
+        containerHeader.addConstraints(
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "H:|[banner]|",
+                options: [],
+                metrics: nil,
+                views: ["banner" : banner]
+            )
+        )
+        containerHeader.addConstraints(
+            NSLayoutConstraint.constraints(
+                withVisualFormat: "V:|[banner]-16-|",
+                options: [],
+                metrics: nil,
+                views: ["banner" : banner]
+            )
+        )
+        
+    }
 }
 
 extension FeedViewController: FeedMovieDelegate {
@@ -78,6 +139,8 @@ extension FeedViewController: FeedMovieDelegate {
             self.feedMovie = feedMovie
             
             tableView.reloadData()
+            setupHeaderTableView()
+
         }
     }
 }
@@ -87,7 +150,7 @@ extension FeedViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
         return feedMovie?.movie.keys.count ?? 0
     }
-        
+    
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 30
     }
@@ -107,10 +170,10 @@ extension FeedViewController {
         titleHeader.translatesAutoresizingMaskIntoConstraints = false
         
         contaier.addConstraints(NSLayoutConstraint.constraints(
-                                withVisualFormat: "H:|-8-[title]|",
-                                options: [],
-                                metrics: nil,
-                                views: ["title": titleHeader]
+            withVisualFormat: "H:|-8-[title]|",
+            options: [],
+            metrics: nil,
+            views: ["title": titleHeader]
         ))
         
         return contaier
@@ -138,8 +201,6 @@ extension FeedViewController {
         }
         
         cell.type = indexPath.section == 0
-        
-        cell.backgroundColor = .brown
         
         return cell
     }
